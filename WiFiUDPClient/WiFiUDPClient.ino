@@ -6,8 +6,8 @@
 #include <WiFiUdp.h>
 
 // WiFi network name and password:
-const char * networkName = "your-ssid";
-const char * networkPswd = "your-password";
+const char * networkName = "Wifi2.4gig";
+const char * networkPswd = "Acro2117";
 
 //IP address to send UDP data to:
 // either use the ip address of the server or 
@@ -51,9 +51,9 @@ void loop(){
       Serial.println(packetBuffer);
     }
     //Send a packet
-    udp.beginPacket(udpAddress,udpPort);
-    udp.printf("Seconds since boot: %u", millis()/1000);
-    udp.endPacket();
+    //udp.beginPacket(udpAddress,udpPort);
+    //udp.printf("Seconds since boot: %u", millis()/1000);
+    //udp.endPacket();
   }
   //Wait for 1 second
   
