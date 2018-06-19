@@ -4,6 +4,17 @@
  */
 #include <WiFi.h>
 #include <WiFiUdp.h>
+#include <Adafruit_NeoPixel.h>
+
+#include <Adafruit_NeoMatrix.h>
+#include <gamma.h>
+
+#include <Adafruit_SPITFT.h>
+#include <Adafruit_SPITFT_Macros.h>
+#include <gfxfont.h>
+#include <Adafruit_GFX.h>
+
+#define PIN 15
 
 // WiFi network name and password:
 const char * networkName = "Wifi2.4gig";
@@ -17,9 +28,23 @@ const int udpPort = 3333;
 char packetBuffer[255]; //buffer to hold incoming packet
 //Are we currently connected?
 boolean connected = false;
-
+Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(4, 8, PIN,
+  NEO_MATRIX_BOTTOM     + NEO_MATRIX_RIGHT +
+  NEO_MATRIX_COLUMNS + NEO_MATRIX_PROGRESSIVE,
+  NEO_GRB            + NEO_KHZ800);
 //The udp library class
 WiFiUDP udp;
+
+int incomingByte;      // a variable to read incoming serial data into
+int iB;
+String inputString = "\n";         // a String to hold incoming data
+boolean stringComplete = true;  // whether the string is complete
+const int len=200;
+char buf[len]= "";
+String inS = "";
+const uint16_t colors[] = {
+matrix.Color(255, 0, 0), matrix.Color(0, 255, 0), matrix.Color(0, 0, 255),matrix.Color(250,210,0),matrix.Color(200, 0, 200) };
+
 
 void setup(){
   // Initilize hardware serial:
@@ -27,6 +52,9 @@ void setup(){
   
   //Connect to the WiFi network
   connectToWiFi(networkName, networkPswd);
+  matrix.begin();
+  matrix.setBrightness(20);
+  matrix.fillScreen(0);
 }
 
 void loop(){
@@ -49,7 +77,44 @@ void loop(){
       }
       Serial.println("Contents :");
       Serial.println(packetBuffer);
+      int x = 0;
+      int i = 0;
+      int j = 0;
+      boolean eFlag = false;
+      matrix.fillScreen(0);
+      while(eFlag == false){
+        Serial.print("index ");
+        Serial.print(x);
+        Serial.print("  ");
+        Serial.println(buf[x]);
+        Serial.print(" i ");
+        Serial.print(i);
+        Serial.print("  ");
+        Serial.print(" j ");
+        Serial.print(j);
+        Serial.print("  ");
+        inS = buf[x];
+        Serial.println(inS);
+        matrix.drawPixel(i,j,colors[inS.toInt()]);
+        matrix.show();
+        if (j > 6){
+          i++;
+          j=0;
+        }
+        else{
+          j++;
+        }
+        if (buf[x] == '\n'){
+          eFlag = true;
+        }
+        if (x > 100){
+          eFlag =true;
+        }
+        x+=2;
+      }
+      
     }
+    
     //Send a packet
     //udp.beginPacket(udpAddress,udpPort);
     //udp.printf("Seconds since boot: %u", millis()/1000);
