@@ -43,7 +43,7 @@ const int len=200;
 char buf[len]= "";
 String inS = "";
 const uint16_t colors[] = {
-matrix.Color(255, 0, 0), matrix.Color(0, 255, 0), matrix.Color(0, 0, 255),matrix.Color(250,210,0),matrix.Color(200, 0, 200) };
+matrix.Color(255, 0, 0), matrix.Color(0, 255, 0), matrix.Color(0, 0, 255),matrix.Color(250,210,0),matrix.Color(255, 250, 255) };
 
 
 void setup(){
@@ -53,7 +53,7 @@ void setup(){
   //Connect to the WiFi network
   connectToWiFi(networkName, networkPswd);
   matrix.begin();
-  matrix.setBrightness(20);
+  matrix.setBrightness(5);
   matrix.fillScreen(0);
 }
 
@@ -85,15 +85,16 @@ void loop(){
       while(eFlag == false){
         Serial.print("index ");
         Serial.print(x);
-        Serial.print("  ");
-        Serial.println(buf[x]);
+        Serial.print("  char");
+        Serial.println(packetBuffer[x]);
         Serial.print(" i ");
         Serial.print(i);
         Serial.print("  ");
         Serial.print(" j ");
         Serial.print(j);
         Serial.print("  ");
-        inS = buf[x];
+        inS = packetBuffer[x];
+        
         Serial.println(inS);
         matrix.drawPixel(i,j,colors[inS.toInt()]);
         matrix.show();
@@ -135,7 +136,6 @@ void connectToWiFi(const char * ssid, const char * pwd){
   
   //Initiate connection
   WiFi.begin(ssid, pwd);
-
   Serial.println("Waiting for WIFI connection...");
 }
 
